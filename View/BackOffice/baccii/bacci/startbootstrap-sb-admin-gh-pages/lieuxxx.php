@@ -10,6 +10,27 @@ if (!file_exists($controllerPath)) {
 
 require_once $controllerPath;
 
+// Server-side validation function
+function validateInput($nom_lieux, $adresse, $capacite) {
+    $errors = [];
+    if (empty(trim($nom_lieux))) {
+        $errors['nom_lieux'] = "Le nom du lieu est requis.";
+    } elseif (strlen(trim($nom_lieux)) < 3) {
+        $errors['nom_lieux'] = "Le nom du lieu doit contenir au moins 3 caractères.";
+    }
+    if (empty(trim($adresse))) {
+        $errors['adresse'] = "L'adresse est requise.";
+    } elseif (strlen(trim($adresse)) < 3) {
+        $errors['adresse'] = "L'adresse doit contenir au moins 3 caractères.";
+    }
+    if (empty($capacite) && $capacite !== '0') {
+        $errors['capacite'] = "La capacité est requise.";
+    } elseif (!is_numeric($capacite) || $capacite < 0) {
+        $errors['capacite'] = "La capacité doit être un nombre positif.";
+    }
+    return $errors;
+}
+
 // Traitements CRUD
 if (isset($_GET['delete_id'])) {
     $success = supprimerLieu($_GET['delete_id']);
@@ -19,12 +40,33 @@ if (isset($_GET['delete_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['ajouter_ligne'])) {
-        $success = ajouterLieu($_POST['nom_lieux'], $_POST['adresse'], $_POST['capacite']);
-        header("Location: lieuxxx.php?success=".($success ? '3' : '0')."&scroll=true");
+        $nom_lieux = $_POST['nom_lieux'] ?? '';
+        $adresse = $_POST['adresse'] ?? '';
+        $capacite = $_POST['capacite'] ?? '';
+
+        $errors = validateInput($nom_lieux, $adresse, $capacite);
+        if (empty($errors)) {
+            $success = ajouterLieu($nom_lieux, $adresse, $capacite);
+            header("Location: lieuxxx.php?success=".($success ? '3' : '0')."&scroll=true");
+        } else {
+            $error_message = implode(' ', array_values($errors));
+            header("Location: lieuxxx.php?success=0&error=".urlencode($error_message)."&scroll=true");
+        }
         exit();
     } elseif (isset($_POST['modifier_lieu'])) {
-        $success = modifierLieu($_POST['id_lieux'], $_POST['nom_lieux'], $_POST['adresse'], $_POST['capacite']);
-        header("Location: lieuxxx.php?success=".($success ? '2' : '0')."&scroll=true");
+        $id_lieux = $_POST['id_lieux'] ?? '';
+        $nom_lieux = $_POST['nom_lieux'] ?? '';
+        $adresse = $_POST['adresse'] ?? '';
+        $capacite = $_POST['capacite'] ?? '';
+
+        $errors = validateInput($nom_lieux, $adresse, $capacite);
+        if (empty($errors)) {
+            $success = modifierLieu($id_lieux, $nom_lieux, $adresse, $capacite);
+            header("Location: lieuxxx.php?success=".($success ? '2' : '0')."&scroll=true");
+        } else {
+            $error_message = implode(' ', array_values($errors));
+            header("Location: lieuxxx.php?success=0&error=".urlencode($error_message)."&scroll=true");
+        }
         exit();
     }
 }
@@ -151,12 +193,22 @@ $lieux = getLieux();
             background-color: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,0,85,0.3);
             color: white;
+            transition: all 0.3s ease;
         }
         
         .form-control-dark:focus {
             background-color: rgba(255,255,255,0.2);
             border-color: var(--primary);
             box-shadow: 0 0 0 0.25rem rgba(255,0,85,0.25);
+        }
+        
+        .form-control-dark.valid {
+            border-color: var(--neon-green);
+        }
+        
+        .form-control-dark.invalid {
+            border-color: red;
+            animation: shake 0.3s;
         }
         
         .modal-content-dark {
@@ -175,6 +227,26 @@ $lieux = getLieux();
         
         #scroll-target {
             scroll-margin-top: 100px;
+        }
+        
+        .error-message {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 2px;
+            min-height: 1rem;
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
+        
+        .form-group {
+            position: relative;
+            margin-bottom: 14px;
         }
     </style>
 </head>
@@ -317,12 +389,11 @@ $lieux = getLieux();
                                         case '1': echo "Lieu supprimé avec succès"; break;
                                         case '2': echo "Lieu modifié avec succès"; break;
                                         case '3': echo "Lieu ajouté avec succès"; break;
-                                        default: echo "Erreur lors de l'opération";
+                                        default: echo isset($_GET['error']) ? urldecode($_GET['error']) : "Erreur lors de l'opération";
                                     }
                                     ?>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                                
                             <?php endif; ?>
                             
                             <div class="table-responsive">
@@ -339,11 +410,26 @@ $lieux = getLieux();
                                     <tbody>
                                         <!-- Add Form -->
                                         <tr style="background-color: rgba(0,0,0,0.2);">
-                                            <form method="POST" action="lieuxxx.php" id="add-form">
+                                            <form method="POST" action="lieuxxx.php" id="add-form" novalidate>
                                                 <td>Nouveau</td>
-                                                <td><input type="text" name="nom_lieux" class="form-control form-control-dark form-control-sm" ></td>
-                                                <td><input type="text" name="adresse" class="form-control form-control-dark form-control-sm"></td>
-                                                <td><input type="number" name="capacite" class="form-control form-control-dark form-control-sm"></td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input type="text" name="nom_lieux" class="form-control form-control-dark form-control-sm" id="add-nom-lieux" required>
+                                                        <div class="error-message" id="add-nom-lieux-error"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input type="text" name="adresse" class="form-control form-control-dark form-control-sm" id="add-adresse" required>
+                                                        <div class="error-message" id="add-adresse-error"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input type="number" name="capacite" class="form-control form-control-dark form-control-sm" id="add-capacite" required>
+                                                        <div class="error-message" id="add-capacite-error"></div>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <button type="submit" name="ajouter_ligne" class="btn btn-sm btn-primary-custom">
                                                         <i class="bi bi-plus-circle"></i> Ajouter
@@ -377,20 +463,23 @@ $lieux = getLieux();
                                                         <h5 class="modal-title">Modifier Lieu</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                    <form method="POST" action="lieuxxx.php">
+                                                    <form method="POST" action="lieuxxx.php" class="edit-form" id="edit-form-<?= $lieu['id_lieux'] ?>" novalidate>
                                                         <div class="modal-body">
                                                             <input type="hidden" name="id_lieux" value="<?= $lieu['id_lieux'] ?>">
-                                                            <div class="mb-3">
+                                                            <div class="mb-3 form-group">
                                                                 <label class="form-label">Nom du lieu</label>
-                                                                <input type="text" name="nom_lieux" class="form-control form-control-dark" value="<?= htmlspecialchars($lieu['nom_lieux']) ?>" required>
+                                                                <input type="text" name="nom_lieux" class="form-control form-control-dark" id="edit-nom-lieux-<?= $lieu['id_lieux'] ?>" value="<?= htmlspecialchars($lieu['nom_lieux']) ?>" required>
+                                                                <div class="error-message" id="edit-nom-lieux-error-<?= $lieu['id_lieux'] ?>"></div>
                                                             </div>
-                                                            <div class="mb-3">
+                                                            <div class="mb-3 form-group">
                                                                 <label class="form-label">Adresse</label>
-                                                                <input type="text" name="adresse" class="form-control form-control-dark" value="<?= htmlspecialchars($lieu['adresse']) ?>" required>
+                                                                <input type="text" name="adresse" class="form-control form-control-dark" id="edit-adresse-<?= $lieu['id_lieux'] ?>" value="<?= htmlspecialchars($lieu['adresse']) ?>" required>
+                                                                <div class="error-message" id="edit-adresse-error-<?= $lieu['id_lieux'] ?>"></div>
                                                             </div>
-                                                            <div class="mb-3">
+                                                            <div class="mb-3 form-group">
                                                                 <label class="form-label">Capacité</label>
-                                                                <input type="number" name="capacite" class="form-control form-control-dark" value="<?= htmlspecialchars($lieu['capacite']) ?>" required>
+                                                                <input type="number" name="capacite" class="form-control form-control-dark" id="edit-capacite-<?= $lieu['id_lieux'] ?>" value="<?= htmlspecialchars($lieu['capacite']) ?>" required>
+                                                                <div class="error-message" id="edit-capacite-error-<?= $lieu['id_lieux'] ?>"></div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer modal-footer-dark">
@@ -431,11 +520,11 @@ $lieux = getLieux();
             <footer class="py-4 mt-auto" style="background-color: var(--dark); border-top: 1px solid rgba(255,0,85,0.3);">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; LiveTheMusic 2023</div>
+                        <div class="text-muted">Copyright © LiveTheMusic 2023</div>
                         <div>
                             <a href="#" style="color: rgba(255,255,255,0.7);">Privacy Policy</a>
-                            &middot;
-                            <a href="#" style="color: rgba(255,255,255,0.7);">Terms &amp; Conditions</a>
+                            ·
+                            <a href="#" style="color: rgba(255,255,255,0.7);">Terms & Conditions</a>
                         </div>
                     </div>
                 </div>
@@ -445,6 +534,7 @@ $lieux = getLieux();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
+    <script src="model/controleSaisie.js"></script>
     <script>
         // Scroll to table after form submission
         document.addEventListener('DOMContentLoaded', function() {
@@ -453,34 +543,6 @@ $lieux = getLieux();
                     behavior: 'smooth'
                 });
             <?php endif; ?>
-
-            // Form validation
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const inputs = this.querySelectorAll('input[required]');
-                    let isValid = true;
-                    
-                    inputs.forEach(input => {
-                        if (!input.value.trim()) {
-                            input.style.borderColor = 'red';
-                            isValid = false;
-                        } else {
-                            input.style.borderColor = '';
-                        }
-                    });
-                    
-                    if (!isValid) {
-                        e.preventDefault();
-                        alert('Veuillez remplir tous les champs requis');
-                    }
-                });
-            });
-            
-            // Prevent form submission from scrolling to top
-            document.getElementById('add-form').addEventListener('submit', function() {
-                sessionStorage.setItem('shouldScroll', 'true');
-            });
         });
     </script>
 </body>

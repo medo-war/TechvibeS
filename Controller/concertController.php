@@ -269,6 +269,27 @@ function uploadConcertImage($file) {
         return ['success' => true, 'path' => $targetFile];
     } else {
         return ['success' => false, 'message' => 'Erreur lors du déplacement du fichier'];
+
     }
 } 
+// Fonction pour rechercher un concert par ID
+function rechercherConcertParId($id_concert) {
+    $pdo = config::getConnexion();
+    try {
+        $stmt = $pdo->prepare("
+            SELECT c.id_concert, c.date_concert, c.prix_concert, 
+                   c.genre, c.place_dispo, c.image, 
+                   l.nom_lieux, l.adresse 
+            FROM concert c
+            JOIN lieux l ON c.id_lieux = l.id_lieux
+            WHERE c.id_concert = ?
+        ");
+        $stmt->execute([$id_concert]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur rechercherConcertParId: " . $e->getMessage());
+        return null;
+    }
+}
+
 ?>
