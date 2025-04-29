@@ -58,28 +58,39 @@ public function getUserById($id) {
         $query->execute(['id' => $id]);
         return $query->fetch();
     } catch (Exception $e) {
-        die('Erreur : ' . $e->getMessage());
+        error_log("Erreur récupération user par ID: " . $e->getMessage());
+        return false;
     }
 }
 
 
-public function updateUser($id, $first_name, $last_name, $email,$pwd,$phone,$role,$image) {
+public function updateUser($id, $first_name, $last_name, $email, $pwd, $phone, $role, $image) {
     $db = Config::getConnexion();
-    $sql = "UPDATE user SET first_name = :first_name, last_name = :last_name, email = :email, pwd= :pwd, phone= :phone, role= :role,image= :image WHERE id = :id";
+    $sql = "UPDATE user SET 
+            first_name = :first_name, 
+            last_name = :last_name, 
+            email = :email, 
+            pwd = :pwd, 
+            phone = :phone, 
+            role = :role, 
+            image = :image 
+            WHERE id = :id";
+    
     try {
         $query = $db->prepare($sql);
-        $query->execute([
+        return $query->execute([
             'id' => $id,
             'first_name' => $first_name,
             'last_name' => $last_name,
             'email' => $email,
-            'pwd'=>$pwd,
-            'phone'=>$phone,
-            'role'=> $role,
-            'image'=>$image,
+            'pwd' => $pwd,
+            'phone' => $phone,
+            'role' => $role,
+            'image' => $image
         ]);
     } catch (Exception $e) {
-        die('Erreur : ' . $e->getMessage());
+        error_log('Erreur mise à jour utilisateur: ' . $e->getMessage());
+        return false;
     }
 }
         
@@ -108,5 +119,6 @@ public function getUserByEmail($email) {
     }
 }
 }
+
 
 ?>

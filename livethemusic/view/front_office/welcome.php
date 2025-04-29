@@ -1,4 +1,15 @@
-
+<?php
+session_start();
+// Si déjà connecté, redirige vers l'accueil
+if (isset($_SESSION['user'])) {
+    header('Location: /livethemusic/view/front_office/index.php');
+    exit();
+}
+if (isset($_SESSION['login_error'])) {
+    echo '<div class="error-message" style="color:red;text-align:center;margin:20px;">'.htmlspecialchars($_SESSION['login_error']).'</div>';
+    unset($_SESSION['login_error']);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,20 +66,21 @@
         
         <!-- Sign In Container (inchangé) -->
         <div class="form-container sign-in-container">
-            <form action="#">
-                <h1>Sign in</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your account</span>
-                <input type="email" placeholder="Email" required />
-                <input type="password" placeholder="Password" required />
-                <a href="#" class="forgot-password">Forgot your password?</a>
-                <button type="submit">Sign In</button>
-            </form>
-        </div>
+        <!-- Changez l'action du formulaire comme ceci -->
+            <form action="/livethemusic/view/front_office/login.php" method="post"> 
+            <h1>Sign in</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your account</span>
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <a href="#" class="forgot-password">Forgot your password?</a>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
 
         <!-- Overlay (inchangé) -->
         <div class="overlay-container">

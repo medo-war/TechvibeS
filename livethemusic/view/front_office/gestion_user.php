@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . '/../../Controller/userController.php';
 require_once __DIR__ . '/../../Model/user.php';
 
@@ -20,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $image = 'uploads/' . $fileName; // Chemin relatif enregistré
         }
     }
+    
 
     // Sécurisation des données envoyées
     $first_name = htmlspecialchars($_POST['first_name'] ?? '');
@@ -42,17 +44,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $added = $userController->addUser($user);
 
     if ($added) {
-        // Sauvegarde de l'email en session pour profil
-        $_SESSION['user_email'] = $email;
+        // Récupérez l'utilisateur complet depuis la base
+        $newUser = $userController->getUserByEmail($email);
+        
+        // Stockez les informations dans la session
+        $_SESSION['user'] = [
+            'id' => $newUser->getId(),
+            'email' => $newUser->getEmail(),
+            'first_name' => $newUser->getFirst_name(),
+            'last_name' => $newUser->getLast_name(),
+            'role' => $newUser->getRole(),
+            'image' => $newUser->getImage(),
+            'logged_in' => true
+        ];
 
-        // Redirection vers le front office
         header('Location: ../../view/front_office/index.php');
         exit();
     } else {
         echo "Une erreur est survenue lors de l'enregistrement.";
     }
 } else {
-    // Accès non autorisé (GET direct)
     header('Location: ../welcome.php');
     exit();
 }

@@ -1,3 +1,14 @@
+<?php
+session_start();
+// Redirigez vers la page de connexion si non connecté
+if (!isset($_SESSION['user'])) {
+    header('Location: /view/front_office/welcome.php');
+    exit();
+}
+
+// Récupérez les infos utilisateur
+$user = $_SESSION['user'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,6 +40,126 @@ https://templatemo.com/tm-577-liberty-market
 
 -->
   </head>
+  <style>
+        /* Style néon rouge pour l'icône de profil */
+        .user-profile {
+            position: relative;
+            display: inline-block;
+            margin-left: 30px;
+            z-index: 1000;
+        }
+
+        .profile-icon {
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 0, 0, 0.8);
+            border: 1px solid #ff073a;
+            box-shadow: 0 0 10px #ff073a, 0 0 20px #ff073a, 0 0 30px #ff073a;
+            transition: all 0.3s ease;
+            animation: neonPulseRed 1.5s infinite alternate;
+        }
+
+        .profile-icon:hover {
+            box-shadow: 0 0 15px #ff073a, 0 0 30px #ff073a, 0 0 45px #ff073a;
+            transform: scale(1.1);
+        }
+
+        .profile-icon img {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px #ff073a);
+        }
+
+        /* Menu déroulant néon rouge */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 65px;
+            background: rgba(10, 0, 0, 0.9);
+            min-width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ff073a;
+            box-shadow: 0 0 20px #ff073a;
+            z-index: 1001;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .profile-dropdown a {
+            color: #fff;
+            padding: 12px 25px;
+            text-decoration: none;
+            display: block;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 7, 58, 0.3);
+            text-shadow: 0 0 8px #ff073a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-dropdown a:before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 7, 58, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .profile-dropdown a:hover {
+            background: rgba(255, 7, 58, 0.15);
+            color: #ff5c8a;
+            padding-left: 30px;
+        }
+
+        .profile-dropdown a:hover:before {
+            left: 100%;
+        }
+
+        .profile-dropdown a:last-child {
+            border-bottom: none;
+            color: #ff8fa3;
+        }
+
+        /* Animations néon rouge */
+        @keyframes neonPulseRed {
+            0% { box-shadow: 0 0 5px #ff073a, 0 0 10px #ff073a; }
+            100% { box-shadow: 0 0 15px #ff073a, 0 0 30px #ff073a, 0 0 45px #ff073a; }
+        }
+
+        @keyframes neonFlicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 22%, 24%, 55% { opacity: 0.7; }
+        }
+
+        .profile-icon {
+            animation: neonPulseRed 2s infinite alternate, neonFlicker 3s infinite;
+        }
+
+        /* Animations menu */
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes dropdownFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+    </style>
 
 <body>
 
@@ -65,11 +196,17 @@ https://templatemo.com/tm-577-liberty-market
                         <li><a href="create.html">Competitions</a></li>
                     </ul>  
                     <!-- Icône de profil -->
-                    <div class="user-profile">
-                        <div class="profile-icon" id="profileIcon">
-                            <img src="assets/images/profile-icon.png" alt="Profile">
-                        </div>
-                    </div>
+                        <div class="user-profile">
+        <div class="profile-icon" id="profileIcon">
+        <img src="/livethemusic/<?= htmlspecialchars($user['image']) ?>" alt="Profile Image">
+
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+            <a href="profile.php"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></a>
+            <a href="#">Settings</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </div>
                     <a class='menu-trigger'>
                         <span>Menu</span>
                     </a>
@@ -495,6 +632,54 @@ https://templatemo.com/tm-577-liberty-market
       </div>
     </div>
   </footer>
+  <script>
+        // Script amélioré avec animation
+        document.getElementById('profileIcon').addEventListener('click', function(e) {
+            e.stopPropagation();
+            var dropdown = document.getElementById('profileDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.animation = 'fadeOut 0.3s forwards';
+                setTimeout(() => {
+                    dropdown.style.display = 'none';
+                }, 300);
+            } else {
+                dropdown.style.display = 'block';
+                dropdown.style.animation = 'fadeIn 0.3s forwards';
+            }
+        });
+
+        window.addEventListener('click', function() {
+            var dropdown = document.getElementById('profileDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.animation = 'fadeOut 0.3s forwards';
+                setTimeout(() => {
+                    dropdown.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        // Empêche la fermeture quand on clique dans le menu
+        document.getElementById('profileDropdown').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+
+    <!-- Ajoutez ces animations CSS -->
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .profile-dropdown {
+            animation: fadeIn 0.3s forwards;
+        }
+    </style>
 
 
   <!-- Scripts -->

@@ -2,40 +2,68 @@
 require_once __DIR__.'/../../../../Controller/userController.php';
 
 $controller = new UserController();
-$user = null;
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $user = $controller->getUserById($id); // ajoute cette méthode dans ton contrôleur si elle n’existe pas
+// Récupérer l'utilisateur existant
+if (isset($_POST['id'])) {
+    $existingUser = $controller->getUserById($_POST['id']);
+    
+    if (!$existingUser) {
+        die("Utilisateur non trouvé");
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->updateUser(
-        $_POST['id'],
-        $_POST['first_name'],
-        $_POST['last_name'],
-        $_POST['email'],
-        $_POST['pwd'],
-        $_POST['phone'],
-        $_POST['role'],
-        $_POST['image'] // ou gérer l’upload d’un nouveau fichier (voir ci-dessous)
+    // Récupérer les données du formulaire
+    $id = $_POST['id'];
+    $first_name = $_POST['first_name'] ?? $existingUser['first_name'];
+    $last_name = $_POST['last_name'] ?? $existingUser['last_name'];
+    $email = $_POST['email'] ?? $existingUser['email'];
+    $phone = $_POST['phone'] ?? $existingUser['phone'];
+    $role = $_POST['role'] ?? $existingUser['role'];
+    
+    // Gestion du mot de passe (ne change que si fourni)
+    $pwd = !empty($_POST['pwd']) ? $_POST['pwd'] : $existingUser['pwd']; // Modification ici
+    
+    // Gestion de l'image
+    $image = $existingUser['image']; // Conserve l'image actuelle par défaut
+    
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../../../../uploads/users/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        
+        $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid() . '.' . $extension;
+        $destination = $uploadDir . $filename;
+        
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
+            $image = 'uploads/users/' . $filename;
+            
+            // Supprimer l'ancienne image si elle existe
+            if (!empty($existingUser['image']) && file_exists(__DIR__ . '/../../../../' . $existingUser['image'])) {
+                unlink(__DIR__ . '/../../../../' . $existingUser['image']);
+            }
+        }
+    }
+    
+    // Mettre à jour l'utilisateur
+    $success = $controller->updateUser(
+        $id,
+        $first_name,
+        $last_name,
+        $email,
+        $pwd,
+        $phone,
+        $role,
+        $image
     );
+    
+    if ($success) {
+        header("Location: gestion_user1.php?success=1");
+    } else {
+        header("Location: gestion_user1.php?error=1");
+    }
+    exit;
 }
 ?>
-
-<!-- Formulaire HTML -->
-<?php if ($user): ?>
-<form method="post">
-    <input type="hidden" name="id" value="<?= $user['id'] ?>">
-    <label>Prénom: <input type="text" name="first_name" value="<?= $user['first_name'] ?>"></label><br>
-    <label>Nom: <input type="text" name="last_name" value="<?= $user['last_name'] ?>"></label><br>
-    <label>Email: <input type="email" name="email" value="<?= $user['email'] ?>"></label><br>
-    <label>Mot de passe: <input type="text" name="pwd" value="<?= $user['pwd'] ?>"></label><br>
-    <label>Téléphone: <input type="text" name="phone" value="<?= $user['phone'] ?>"></label><br>
-    <label>Rôle: <input type="text" name="role" value="<?= $user['role'] ?>"></label><br>
-    <button type="submit">Modifier</button>
-</form>
-<?php else: ?>
-<p>Utilisateur non trouvé.</p>
-<?php endif; ?>
-<?php

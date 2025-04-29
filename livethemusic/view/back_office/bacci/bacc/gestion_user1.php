@@ -52,7 +52,7 @@ $users = $controller->getUsers();
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link" href="index1.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
@@ -191,10 +191,19 @@ $users = $controller->getUsers();
                     <?= $user['is_active'] ? 'Actif' : 'Inactif' ?>
                 </td>-->
                 <td class="actions-cell">
-                <td class="actions-cell">
-    <a class="btn-action edit" title="Modifier" href="modifier_user.php?id=<?= $user['id'] ?>">
-        <i class="fas fa-edit"></i>
-    </a>
+                
+   <!-- Modifiez le bouton d'édition dans votre tableau -->
+   <button class="btn-action edit" title="Modifier" onclick="showEditModal({
+    id: <?= $user['id'] ?>,
+    first_name: '<?= addslashes($user['first_name']) ?>',
+    last_name: '<?= addslashes($user['last_name']) ?>',
+    email: '<?= addslashes($user['email']) ?>',
+    phone: '<?= addslashes($user['phone'] ?? '') ?>',
+    role: '<?= addslashes($user['role']) ?>',
+    image: '<?= addslashes($user['image'] ?? '') ?>'
+})">
+    <i class="fas fa-edit"></i>
+</button>
     <a class="btn-action delete" title="Supprimer" href="supprimer_user.php?id=<?= $user['id'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
         <i class="fas fa-trash"></i>
     </a>
@@ -237,6 +246,274 @@ $users = $controller->getUsers();
                 </div>
             </div>
         </main>
+        <!-- Modal de modification style néon -->
+<div class="modal fade neon-modal" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content neon-content">
+            <div class="modal-header neon-header">
+                <h5 class="modal-title neon-title">
+                    <i class="fas fa-user-edit"></i> MODIFIER L'UTILISATEUR
+                </h5>
+                <button type="button" class="btn-close neon-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body neon-body">
+                <form id="editUserForm" method="POST" action="modifier_user.php" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="edit_user_id">
+                    
+                    <div class="neon-form-group">
+                        <label class="neon-label">
+                            <i class="fas fa-id-card"></i> NOM COMPLET
+                        </label>
+                        <div class="d-flex gap-3">
+                            <input type="text" class="neon-input" id="edit_first_name" name="first_name" placeholder="Prénom" required>
+                            <input type="text" class="neon-input" id="edit_last_name" name="last_name" placeholder="Nom" required>
+                        </div>
+                    </div>
+                    
+                    <div class="neon-form-group">
+                        <label class="neon-label">
+                            <i class="fas fa-at"></i> EMAIL
+                        </label>
+                        <input type="email" class="neon-input" id="edit_email" name="email" required>
+                    </div>
+                    
+                    <div class="neon-form-group">
+                        <label class="neon-label">
+                            <i class="fas fa-phone"></i> TÉLÉPHONE
+                        </label>
+                        <input type="text" class="neon-input" id="edit_phone" name="phone">
+                    </div>
+                    
+                    <div class="neon-form-group">
+                        <label class="neon-label">
+                            <i class="fas fa-key"></i> MOT DE PASSE
+                        </label>
+                        <input type="password" class="neon-input" id="edit_password" name="pwd" placeholder="••••••••">
+                    </div>
+                    
+                    <div class="neon-form-group">
+                        <label class="neon-label">
+                            <i class="fas fa-user-tag"></i> RÔLE
+                        </label>
+                        <select class="neon-select" id="edit_role" name="role" required>
+                            <option value="admin">ADMIN</option>
+                            <option value="editeur">ÉDITEUR</option>
+                            <option value="utilisateur">UTILISATEUR</option>
+                        </select>
+                    </div>
+                    
+                    <div class="neon-form-group">
+                        <label class="neon-label">
+                            <i class="fas fa-image"></i> PHOTO DE PROFIL
+                        </label>
+                        <div class="neon-upload">
+                            <label class="neon-upload-btn">
+                                <i class="fas fa-cloud-upload-alt"></i> CHOISIR UN FICHIER
+                                <input type="file" id="edit_image" name="image" accept="image/*" hidden>
+                            </label>
+                            <span class="neon-file-name" id="file-name">Aucun fichier sélectionné</span>
+                        </div>
+                        
+                        <div class="neon-preview">
+                            <div class="neon-preview-item">
+                                <p>ACTUELLE:</p>
+                                <img id="current_image_preview" src="" class="neon-img">
+                            </div>
+                            <div class="neon-preview-item">
+                                <p>NOUVELLE:</p>
+                                <img id="new_image_preview" src="#" class="neon-img" style="display:none;">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer neon-footer">
+                <button type="button" class="neon-btn neon-btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> ANNULER
+                </button>
+                <button type="submit" form="editUserForm" class="neon-btn neon-btn-save">
+                    <i class="fas fa-save"></i> ENREGISTRER
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Style Néon */
+.neon-modal {
+    font-family: 'Poppins', sans-serif;
+}
+
+.neon-content {
+    background: #1a1a2e;
+    border: 1px solid #ff0055;
+    box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
+    color: #fff;
+    border-radius: 8px;
+}
+
+.neon-header {
+    border-bottom: 1px solid rgba(255, 0, 85, 0.3);
+}
+
+.neon-title {
+    color: #ff0055;
+    text-shadow: 0 0 5px #ff0055;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.neon-close {
+    color: #ff0055;
+    opacity: 1;
+    text-shadow: none;
+}
+
+.neon-label {
+    color: #ff0055;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.neon-input, .neon-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 0, 85, 0.3);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.neon-input:focus, .neon-select:focus {
+    border-color: #ff0055;
+    box-shadow: 0 0 5px #ff0055;
+    outline: none;
+}
+
+.neon-upload {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.neon-upload-btn {
+    background: rgba(255, 0, 85, 0.2);
+    border: 1px dashed #ff0055;
+    color: #ff0055;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.neon-upload-btn:hover {
+    background: rgba(255, 0, 85, 0.3);
+}
+
+.neon-file-name {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.neon-preview {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.neon-preview-item {
+    text-align: center;
+}
+
+.neon-preview-item p {
+    color: #ff0055;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.neon-img {
+    max-height: 100px;
+    border: 1px solid rgba(255, 0, 85, 0.3);
+    border-radius: 4px;
+}
+
+.neon-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.neon-btn-cancel {
+    background: rgba(255, 0, 85, 0.2);
+    color: #ff0055;
+}
+
+.neon-btn-cancel:hover {
+    background: rgba(255, 0, 85, 0.3);
+}
+
+.neon-btn-save {
+    background: #ff0055;
+    color: white;
+    box-shadow: 0 0 5px #ff0055;
+}
+
+.neon-btn-save:hover {
+    background: #ff0066;
+    box-shadow: 0 0 10px #ff0055;
+}
+</style>
+
+<script>
+// Fonction pour afficher le modal
+function showEditModal(user) {
+    // Remplir les champs
+    document.getElementById('edit_user_id').value = user.id;
+    document.getElementById('edit_first_name').value = user.first_name;
+    document.getElementById('edit_last_name').value = user.last_name;
+    document.getElementById('edit_email').value = user.email;
+    document.getElementById('edit_phone').value = user.phone || '';
+    document.getElementById('edit_role').value = user.role;
+    
+    // Afficher l'image actuelle
+    if(user.image) {
+        const preview = document.getElementById('current_image_preview');
+        preview.src = '../../../../' + user.image;
+        preview.style.display = 'block';
+    }
+    
+    // Gestion du nom de fichier
+    document.getElementById('edit_image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('file-name').textContent = file.name;
+            
+            // Prévisualisation de l'image
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('new_image_preview').src = event.target.result;
+                document.getElementById('new_image_preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Afficher le modal
+    new bootstrap.Modal(document.getElementById('editUserModal')).show();
+}
+</script>
+        
+        
         <script src="js/user.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>

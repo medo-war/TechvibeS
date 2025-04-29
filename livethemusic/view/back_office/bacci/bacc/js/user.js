@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
         el.style.webkitTextSecurity = 'none';
     });
 });
-<script>
     document.addEventListener('DOMContentLoaded', function () {
         // Ouvrir le modal avec les données de l'utilisateur
         const editButtons = document.querySelectorAll('.open-edit-modal');
@@ -134,4 +133,4 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-</script>
+    
