@@ -1,0 +1,200 @@
+/* ---------- FOND PRINCIPAL ---------- */
+.main-content {
+    position: relative;
+    width: calc(100% - 200px);
+    margin-left: 200px;
+    padding: 20px;
+    min-height: 100vh;
+    background: #120c2b; /* Fond violet/bleu nuit */
+    background: linear-gradient(135deg, #0b081d 0%, #1e1038 100%);
+}
+
+/* ---------- CONTENEUR TABLEAU ---------- */
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: rgba(38, 22, 61, 0.95); /* Violet foncé semi-transparent */
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 
+        0 0 0 1px rgba(138, 43, 226, 0.15), /* Bordure violette subtile */
+        0 10px 40px rgba(123, 31, 162, 0.25); /* Ombre magenta */
+    border: 1px solid rgba(203, 31, 192, 0.1);
+}
+
+/* ---------- STYLE DU TABLEAU ---------- */
+.users-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    background: transparent;
+}
+
+/* En-tête */
+.users-table thead th {
+    background: linear-gradient(to right, #3a1b6e 0%, #2c1055 100%);
+    color: #f0e6ff;
+    padding: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(42, 9, 68, 0.3);
+}
+
+/* Lignes */
+.users-table tbody tr {
+    background: rgba(46, 27, 85, 0.8); /* Violet moyen */
+    transition: all 0.25s ease;
+    backdrop-filter: blur(2px);
+}
+
+.users-table tbody tr:nth-child(even) {
+    background: rgba(54, 33, 99, 0.8); /* Violet légèrement différent */
+}
+
+.users-table tbody tr:hover {
+    background: rgba(106, 13, 173, 0.6); /* Violet clair */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(123, 31, 162, 0.3);
+}
+
+/* Cellules */
+.users-table td {
+    padding: 14px 16px;
+    color: #e6d8ff;
+    border: none;
+    vertical-align: middle;
+    position: relative;
+}
+
+/* Bordure entre les lignes */
+.users-table tbody tr {
+    border-bottom: 1px solid rgba(138, 43, 226, 0.1);
+}
+
+/* ---------- ELEMENTS INTERACTIFS ---------- */
+/* Bouton Suppression */
+.delete-btn {
+    color: #cb1fc0; /* Exactement comme le magenta du dashboard */
+    background: rgba(203, 31, 192, 0.1);
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    color: white;
+    background: #ff2d75;
+    box-shadow: 0 0 15px rgba(203, 31, 192, 0.4);
+}
+
+/* Ligne d'ajout */
+.add-row {
+    background: rgba(70, 28, 98, 0.9) !important;
+    border-top: 2px solid #cb1fc0 !important; /* Ligne magenta */
+}
+
+/* ---------- COINS ARRONDIS ---------- */
+.users-table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.users-table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.users-table tbody tr:first-child td:first-child {
+    border-top-left-radius: 8px;
+}
+
+.users-table tbody tr:first-child td:last-child {
+    border-top-right-radius: 8px;
+}
+
+.users-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.users-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 992px) {
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-container {
+        padding: 15px;
+    }
+    
+    .users-table thead {
+        display: none;
+    }
+    
+    .users-table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+    
+    .users-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+    }
+    
+    .users-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #cb1fc0;
+        margin-right: 15px;
+    }
+}
+/* ========= SIDEBAR - MÊME COULEUR QUE LE FOND ========= */
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #0f0c24 !important; /* Couleur unie identique au fond */
+    z-index: 100;
+    /* Suppression de tout dégradé ou bordure qui pourrait créer des différences */
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* ========= CORRECTION DU FOND PRINCIPAL ========= */
+.main-content {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+    padding: 20px;
+    min-height: 100vh;
+    background: #0f0c24; /* Exactement la même couleur que la sidebar */
+}
+
+/* ========= POUR VOIR LA SIDEBAR - BORDURE SUBTILE ========= */
+.sidebar::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    background: rgba(152, 40, 126, 0.3); /* Ligne de séparation très subtile */
+}
+
+/* ========= CONTENEUR TABLEAU (style inchangé) ========= */
+.table-container {
+    background: rgba(34, 17, 51, 0.95);
+    /* ... (le reste de vos styles existants) ... */
+}
