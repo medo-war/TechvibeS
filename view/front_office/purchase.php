@@ -1,5 +1,6 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/livethemusic/Controller/Config.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/TechvibeS/Controller/Config.php';
+
 $pdo = config::getConnexion();
 // Check if ticket ID is provided
 if (!isset($_GET['id'])) {
@@ -22,6 +23,7 @@ if (!$ticket) {
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header("Location: ticket.php");
     // Collect form data
     $first_name = htmlspecialchars($_POST['first_name']);
     $last_name = htmlspecialchars($_POST['last_name']);
@@ -66,8 +68,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update_stmt = $pdo->prepare($update_sql);
             $update_stmt->execute([$quantity, $ticket_id]);
             
+
             // Redirect to success page
-            header("Location: ticket.php?code=" . $ticket_code);
+            header("Location: ../../Mailing/sendmail.php?email=" . urlencode($email) .
+            "&ticket_code=" . urlencode($ticket_code) .
+            "&concert_name=" . urlencode($ticket['concert_name']) .
+            "&event_date=" . urlencode($ticket['event_date']) .
+            "&event_time=" . urlencode($ticket['event_time']) .
+            "&artist_name=" . urlencode($ticket['artist_name']) .
+            "&venue=" . urlencode($ticket['venue']) .
+            "&city=" . urlencode($ticket['city']) .
+            "&price=" . urlencode($ticket['price']));
+
             exit();
         } catch (PDOException $e) {
             $errors[] = "Database error: " . $e->getMessage();
@@ -343,14 +355,36 @@ $total = $subtotal + $service_fee;
                         
                         <div class="mb-3">
                             <label for="payment_method" class="form-label">Payment Method</label>
-                            <select class="form-select" id="payment_method" name="payment_method" required>
+                            <select class="form-select" id="payment_method" name="payment_method" required onchange="showPaymentDetails()">
                                 <option value="">Select payment method</option>
                                 <option value="credit_card">Credit Card</option>
                                 <option value="paypal">PayPal</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                             </select>
                         </div>
-                        
+
+                        <!-- Payment Details Sections -->
+                        <div id="credit_card_info" class="payment-info" style="display: none;">
+                            <h5>Credit Card Information</h5>
+                            <input type="text" class="form-control mb-2" placeholder="Card Number" name="card_number" />
+                            <input type="text" class="form-control mb-2" placeholder="Expiry Date (MM/YY)" name="expiry_date" />
+                            <input type="text" class="form-control mb-2" placeholder="CVV" name="cvv" />
+                        </div>
+
+                        <div id="paypal_info" class="payment-info" style="display: none;">
+                            <h5>Pay with PayPal</h5>
+                            <div id="paypal-button-container"></div>
+                        </div>
+
+                        <div id="bank_transfer_info" class="payment-info" style="display: none;">
+                            <h5>Bank Transfer Details</h5>
+                            <p>Please transfer the total amount to the following account:</p>
+                            <ul>
+                                <li><strong>Bank:</strong> MyBank</li>
+                                <li><strong>IBAN:</strong> FR76 3000 6000 0112 3456 7890 189</li>
+                                <li><strong>BIC:</strong> AGRIFRPP</li>
+                            </ul>
+                        </div>                        
                         <div class="summary-card">
                             <h5>Order Summary</h5>
                             <div class="summary-item">
@@ -395,5 +429,45 @@ $total = $subtotal + $service_fee;
             document.getElementById('total-price').textContent = '$' + total.toFixed(2);
         });
     </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AXY0Jhcnhly9YBUa5n_sZph4xZaEoQ4E_m2n_sAHHJcomGbkq55Keaj1PrEGYOYd2KK7gA9OvmMvy1oz"></script>
+
+    <script>
+        function showPaymentDetails() {
+            const selected = document.getElementById("payment_method").value;
+            
+            // Hide all
+            document.querySelectorAll(".payment-info").forEach(div => div.style.display = "none");
+            
+            // Show selected
+            if (selected === "credit_card") {
+                document.getElementById("credit_card_info").style.display = "block";
+            } else if (selected === "paypal") {
+                document.getElementById("paypal_info").style.display = "block";
+            } else if (selected === "bank_transfer") {
+                document.getElementById("bank_transfer_info").style.display = "block";
+            }
+        }
+        </script>
+        <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                // This is just a demo setup — you should dynamically pass the amount
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '10.00' // Replace with dynamic total
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Payment completed by ' + details.payer.name.given_name + '!');
+                    // Redirect or submit form here
+                });
+            }
+        }).render('#paypal-button-container'); // This ID must match your container
+        </script>
+
 </body>
 </html>

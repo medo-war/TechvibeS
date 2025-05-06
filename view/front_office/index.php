@@ -2,7 +2,7 @@
 session_start();
 // Redirigez vers la page de connexion si non connecté
 if (!isset($_SESSION['user'])) {
-    header('Location: /view/front_office/welcome.php');
+    header('Location: /TechvibeS/view/front_office/welcome.php');
     exit();
 }
 
@@ -192,7 +192,7 @@ https://templatemo.com/tm-577-liberty-market
                         <li><a href="index.html" class="active">Home</a></li>
                         <li><a href="explore.html">Explore</a></li>
                         <li><a href="details.php">Artists</a></li>
-                        <li><a href="author.html">Tickets</a></li>
+                        <li><a href="author.php">Tickets</a></li>
                         <li><a href="create.html">Competitions</a></li>
                     </ul>  
                     <!-- Icône de profil -->
