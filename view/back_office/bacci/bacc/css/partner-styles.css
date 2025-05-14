@@ -1,0 +1,349 @@
+/* Partner Management Styles */
+:root {
+    --primary-color: #FF0055; /* Rouge néon */
+    --secondary-color: #FF2A7F; 
+    --accent-color: #00F0FF; /* Bleu néon */
+    --dark-color: #0F0F1B; /* Fond sombre */
+    --light-color: #1E1E3A;
+    --neon-green: #00FFAA;
+    --neon-purple: #A83AFB;
+}
+
+/* Partner card styles */
+.partner-card {
+    background-color: var(--light-color);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+}
+
+.partner-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-color);
+}
+
+.partner-card .card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.partner-card .card-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(255, 255, 255, 0.1)
+    );
+    transform: rotate(30deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: rotate(30deg) translate(-10%, -10%); }
+    100% { transform: rotate(30deg) translate(10%, 10%); }
+}
+
+.partner-card .card-body {
+    padding: 20px;
+}
+
+.partner-type {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.partner-type.sponsor {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.partner-type.venue {
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+}
+
+.partner-type.media {
+    background-color: var(--neon-purple);
+    color: white;
+}
+
+.partner-type.technology {
+    background-color: var(--neon-green);
+    color: var(--dark-color);
+}
+
+.partner-type.other {
+    background-color: #6c757d;
+    color: white;
+}
+
+.partner-status {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.partner-status.active {
+    background-color: var(--neon-green);
+    color: var(--dark-color);
+}
+
+.partner-status.pending {
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+}
+
+.partner-status.inactive {
+    background-color: #6c757d;
+    color: white;
+}
+
+.partner-info {
+    margin-bottom: 15px;
+}
+
+.partner-info .label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 3px;
+}
+
+.partner-info .value {
+    font-size: 1rem;
+    color: white;
+}
+
+.partner-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-right: 10px;
+    color: var(--accent-color);
+}
+
+.partner-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.partner-actions .btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Filter styles */
+.filter-card {
+    background-color: var(--light-color);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Statistics cards */
+.stat-card {
+    background-color: var(--light-color);
+    border-radius: 10px;
+    border-left: 4px solid var(--primary-color);
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.primary {
+    border-left-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(255, 0, 85, 0.2), rgba(255, 42, 127, 0.2));
+}
+
+.stat-card.success {
+    border-left-color: var(--neon-green);
+    background: linear-gradient(135deg, rgba(0, 255, 170, 0.2), rgba(0, 200, 150, 0.2));
+}
+
+.stat-card.info {
+    border-left-color: var(--accent-color);
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 200, 255, 0.2));
+}
+
+.stat-card.warning {
+    border-left-color: var(--neon-purple);
+    background: linear-gradient(135deg, rgba(168, 58, 251, 0.2), rgba(130, 45, 200, 0.2));
+}
+
+.stat-card .card-title {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+}
+
+.stat-card .card-value {
+    font-size: 1.8rem;
+    color: white;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.stat-card .card-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 2rem;
+    opacity: 0.2;
+}
+
+/* Form styles */
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+    color: white;
+}
+
+.form-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.form-text {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.required-field::after {
+    content: '*';
+    color: var(--primary-color);
+    margin-left: 4px;
+}
+
+.form-card {
+    background-color: var(--light-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.form-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 0, 85, 0.3);
+}
+
+.form-card .card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-weight: 600;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 85, 0.5);
+}
+
+.btn-outline-secondary {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Contract template selection */
+.contract-template-card {
+    background-color: rgba(30, 30, 58, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.contract-template-card:hover {
+    background-color: rgba(30, 30, 58, 0.8);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.contract-template-card.selected {
+    background-color: rgba(0, 240, 255, 0.1);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.contract-template-card h5 {
+    color: white;
+    margin-bottom: 5px;
+}
+
+.contract-template-card p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.contract-template-card .price {
+    color: var(--neon-green);
+    font-weight: 600;
+}
+
+.contract-template-card .duration {
+    color: var(--accent-color);
+    font-weight: 600;
+}

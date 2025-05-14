@@ -1,0 +1,67 @@
+/**
+ * Error Styles for Partner Offer Page
+ */
+
+/* Error Container */
+.error-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    margin: 50px auto;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ec6090;
+}
+
+/* Error Icon */
+.error-icon {
+    margin-bottom: 20px;
+}
+
+/* Large Red Exclamation Mark */
+.error-icon-svg {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Error Message Text */
+.error-message {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Back to Partners Link */
+.back-to-partners {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(236, 96, 144, 0.2);
+    color: #ec6090;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    margin-top: 15px;
+    border: 1px solid rgba(236, 96, 144, 0.3);
+}
+
+.back-to-partners:hover {
+    background-color: rgba(236, 96, 144, 0.3);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Animation for the error icon */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.error-icon-svg {
+    animation: pulse 2s infinite;
+}

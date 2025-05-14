@@ -1,0 +1,119 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Partner Card - Acme Corporation</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #0F0F1B;
+                    color: white;
+                }
+                .partner-card {
+                    width: 800px;
+                    margin: 20px auto;
+                    border: 2px solid #FF0055;
+                    border-radius: 20px;
+                    overflow: hidden;
+                    background-color: #1E1E3A;
+                }
+                .card-header {
+                    background-color: #0F0F1B;
+                    padding: 20px;
+                    border-bottom: 1px solid #FF0055;
+                }
+                .card-header h1 {
+                    margin: 0;
+                    font-size: 24px;
+                    color: white;
+                }
+                .card-header h2 {
+                    margin: 5px 0;
+                    font-size: 18px;
+                    color: #ccc;
+                }
+                .card-body {
+                    display: flex;
+                    padding: 20px;
+                }
+                .card-info {
+                    flex: 1;
+                }
+                .card-info p {
+                    margin: 10px 0;
+                }
+                .card-qr {
+                    text-align: center;
+                    padding: 10px;
+                }
+                .card-qr img {
+                    width: 150px;
+                    height: 150px;
+                    background: white;
+                    padding: 10px;
+                }
+                .card-footer {
+                    background-color: #0F0F1B;
+                    padding: 15px 20px;
+                    border-top: 1px solid #FF0055;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .partner-type, .partner-status {
+                    display: inline-block;
+                    padding: 5px 10px;
+                    border-radius: 50px;
+                    font-size: 12px;
+                    margin-right: 10px;
+                }
+                .partner-type {
+                    background-color: #7453fc;
+                    color: white;
+                }
+                .partner-status {
+                    background-color: #00F0FF;
+                    color: black;
+                }
+                .partner-status.active {
+                    background-color: #00FFAA;
+                }
+                .partner-status.pending {
+                    background-color: #FFD700;
+                }
+                .partner-status.inactive {
+                    background-color: #FF0055;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="partner-card">
+                <div class="card-header">
+                    <h1>Acme Corporation</h1>
+                    <h2>chkobba</h2>
+                    <span class="partner-type">Sponsor</span>
+                    <span class="partner-status active">Active</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-info">
+                        <p><strong>Email:</strong> peonycovers05@gmail.com</p>
+                        <p><strong>Phone:</strong> 55512416</p>
+                        <p><strong>Contract Period:</strong> May 23, 2025 - May 23, 2025</p>
+                        <p><strong>Partnership Value:</strong> $7,500.00</p>
+                        <p><strong>Partner ID:</strong> 6</p>
+                    </div>
+                    <div class="card-qr">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fforms.gle%2FUGzJ4Hd7X9tEZ2Lx5" alt="QR Code">
+                        <p>Scan for exclusive offers!</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div>Live The Music Partnership</div>
+                    <div>Generated on: 2025-05-14 00:39:51</div>
+                </div>
+            </div>
+        </body>
+        </html>

@@ -1,0 +1,120 @@
+/**
+ * Partner Form Style Fixes
+ * Improves the appearance of select dropdowns and form elements
+ */
+
+/* Fix for select dropdowns */
+.partner-form select {
+    background-color: rgba(11, 28, 62, 0.7) !important;
+    color: white !important;
+    border: 1px solid var(--primary-color) !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    width: 100% !important;
+    appearance: auto !important; /* Show the dropdown arrow */
+}
+
+/* Fix for select dropdown options */
+.partner-form select option {
+    background-color: #0b1c3e !important;
+    color: white !important;
+    padding: 10px !important;
+}
+
+/* Hover state for options */
+.partner-form select option:hover,
+.partner-form select option:focus,
+.partner-form select option:active,
+.partner-form select option:checked {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Fix for input fields */
+.partner-form input[type="text"],
+.partner-form input[type="email"],
+.partner-form input[type="tel"],
+.partner-form input[type="number"],
+.partner-form input[type="date"],
+.partner-form textarea {
+    background-color: rgba(11, 28, 62, 0.7) !important;
+    color: white !important;
+    border: 1px solid var(--primary-color) !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    width: 100% !important;
+}
+
+/* Fix for input placeholders */
+.partner-form input::placeholder,
+.partner-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Fix for validation styles */
+.partner-form .is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.partner-form .is-valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+.partner-form .invalid-feedback {
+    color: #ff6b6b !important;
+    font-weight: bold !important;
+    margin-top: 5px !important;
+    display: block !important;
+}
+
+/* Error alert styling */
+#validationErrorAlert {
+    background-color: rgba(220, 53, 69, 0.9) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    border: 1px solid #ff6b6b !important;
+    padding: 15px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3) !important;
+}
+
+#validationErrorAlert ul {
+    margin-top: 10px !important;
+    padding-left: 20px !important;
+}
+
+#validationErrorAlert li {
+    margin-bottom: 5px !important;
+}
+
+/* Fix for checkbox */
+.partner-form .form-check {
+    margin: 20px 0 !important;
+}
+
+.partner-form .form-check input[type="checkbox"] {
+    margin-right: 10px !important;
+}
+
+.partner-form .form-check label {
+    color: white !important;
+}
+
+.partner-form .form-check a {
+    color: var(--primary-color) !important;
+    text-decoration: underline !important;
+}
+
+/* Fix for date inputs in webkit browsers */
+.partner-form input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) !important;
+}
+
+/* Fix for number inputs in webkit browsers */
+.partner-form input[type="number"]::-webkit-inner-spin-button,
+.partner-form input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1 !important;
+    height: 30px !important;
+}
