@@ -1,12 +1,17 @@
 <?php
 // Inclusion du fichier de configuration
+<<<<<<< HEAD
 include __DIR__ . '/Config.php';
+=======
+include 'C:\xampp\htdocs\projetwebCRUD - ranim\Config.php';
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
 
 // Fonction pour ajouter un concert (avec image)
 function ajouterConcert($id_lieux, $date_concert, $prix_concert, $genre, $place_dispo, $imageFile = null) {
     $pdo = config::getConnexion();
     
     try {
+<<<<<<< HEAD
         // Log des paramètres reçus
         error_log("Début ajout concert - Paramètres: id_lieux=$id_lieux, date=$date_concert, prix=$prix_concert, genre=$genre, places=$place_dispo");
         if ($imageFile) {
@@ -32,11 +37,14 @@ function ajouterConcert($id_lieux, $date_concert, $prix_concert, $genre, $place_
             throw new Exception("Nombre de places invalide");
         }
         
+=======
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
         // Chemin par défaut
         $imagePath = 'Images/default-avatar.png';
         
         // Si une image est uploadée
         if ($imageFile && $imageFile['error'] === UPLOAD_ERR_OK) {
+<<<<<<< HEAD
             error_log("Tentative d'upload d'image...");
             $uploadResult = uploadConcertImage($imageFile);
             if ($uploadResult['success']) {
@@ -44,10 +52,17 @@ function ajouterConcert($id_lieux, $date_concert, $prix_concert, $genre, $place_
                 error_log("Image uploadée avec succès: " . $imagePath);
             } else {
                 error_log("Erreur upload image: " . $uploadResult['message']);
+=======
+            $uploadResult = uploadConcertImage($imageFile);
+            if ($uploadResult['success']) {
+                $imagePath = $uploadResult['path'];
+            } else {
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
                 throw new Exception($uploadResult['message']);
             }
         }
 
+<<<<<<< HEAD
         error_log("Préparation de l'insertion en base de données avec image: " . $imagePath);
         $stmt = $pdo->prepare("INSERT INTO concert (id_lieux, date_concert, prix_concert, genre, place_dispo, image) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$id_lieux, $date_concert, $prix_concert, $genre, $place_dispo, $imagePath]);
@@ -56,6 +71,14 @@ function ajouterConcert($id_lieux, $date_concert, $prix_concert, $genre, $place_
         return true;
     } catch (Exception $e) {
         error_log("ERREUR CRITIQUE - Ajout concert: " . $e->getMessage());
+=======
+        $stmt = $pdo->prepare("INSERT INTO concert (id_lieux, date_concert, prix_concert, genre, place_dispo, image) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$id_lieux, $date_concert, $prix_concert, $genre, $place_dispo, $imagePath]);
+        
+        return true;
+    } catch (Exception $e) {
+        error_log("Erreur ajout concert: " . $e->getMessage());
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
         return false;
     }
 }
@@ -125,6 +148,7 @@ function modifierConcert($id_concert, $id_lieux, $date_concert, $prix_concert, $
         
         // Si nouvelle image uploadée
         if ($image['error'] === UPLOAD_ERR_OK) {
+<<<<<<< HEAD
             // Utiliser la fonction uploadConcertImage pour gérer l'upload
             $uploadResult = uploadConcertImage($image);
             if ($uploadResult['success']) {
@@ -139,14 +163,44 @@ function modifierConcert($id_concert, $id_lieux, $date_concert, $prix_concert, $
             } else {
                 // Journaliser l'erreur mais continuer la mise à jour sans changer l'image
                 error_log("Erreur lors de l'upload de l'image: " . $uploadResult['message']);
+=======
+            // Supprime l'ancienne image si elle existe
+            if (!empty($image_path) && file_exists($image_path) && $image_path !== 'Images/default-avatar.png') {
+                unlink($image_path);
+            }
+
+            // Valide et déplace la nouvelle image
+            $upload_dir = 'uploads/concerts/';
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+
+            $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $file_ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+            
+            if (!in_array($file_ext, $valid_extensions)) {
+                throw new Exception("Format d'image invalide");
+            }
+
+            $image_name = uniqid() . '_' . basename($image['name']);
+            $image_path = $upload_dir . $image_name;
+
+            if (!move_uploaded_file($image['tmp_name'], $image_path)) {
+                throw new Exception("Échec de l'upload de l'image");
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
             }
         } 
         // Si case "Supprimer l'image" cochée
         elseif (isset($_POST['remove_image']) && $_POST['remove_image'] === 'on') {
+<<<<<<< HEAD
             $fullImagePath = $_SERVER['DOCUMENT_ROOT'] . '/livethemusic/' . $image_path;
             if (!empty($image_path) && file_exists($fullImagePath) && $image_path !== 'Images/default-avatar.png') {
                 unlink($fullImagePath);
                 error_log("Image supprimée: " . $fullImagePath);
+=======
+            if (!empty($image_path) && file_exists($image_path) && $image_path !== 'Images/default-avatar.png') {
+                unlink($image_path);
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
             }
             $image_path = 'Images/default-avatar.png';
         }
@@ -249,6 +303,7 @@ function verifierDisponibilite($id_lieux, $date_concert) {
 
 // Fonction supplémentaire pour gérer l'upload d'image
 function uploadConcertImage($file) {
+<<<<<<< HEAD
     error_log("Début de la fonction uploadConcertImage");
     
     // Vérifier si un fichier a été uploadé
@@ -259,11 +314,16 @@ function uploadConcertImage($file) {
     
     if ($file['error'] == UPLOAD_ERR_NO_FILE) {
         error_log("Erreur: Aucun fichier n'a été uploadé");
+=======
+    // Vérifier si un fichier a été uploadé
+    if (!isset($file['error']) || $file['error'] == UPLOAD_ERR_NO_FILE) {
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
         return ['success' => false, 'message' => 'Aucun fichier uploadé'];
     }
 
     // Vérifier les erreurs d'upload
     if ($file['error'] !== UPLOAD_ERR_OK) {
+<<<<<<< HEAD
         $errorMessages = [
             UPLOAD_ERR_INI_SIZE => 'Le fichier dépasse la taille maximale définie dans php.ini',
             UPLOAD_ERR_FORM_SIZE => 'Le fichier dépasse la taille maximale définie dans le formulaire HTML',
@@ -325,18 +385,42 @@ function uploadConcertImage($file) {
     } catch (Exception $e) {
         error_log("Erreur lors de la vérification de l'image: " . $e->getMessage());
         return ['success' => false, 'message' => 'Erreur lors de la vérification de l\'image'];
+=======
+        return ['success' => false, 'message' => 'Erreur d\'upload: ' . $file['error']];
+    }
+
+    $targetDir = "uploads/concerts/";
+    if (!file_exists($targetDir)) {
+        if (!mkdir($targetDir, 0777, true)) {
+            return ['success' => false, 'message' => 'Impossible de créer le dossier'];
+        }
+    }
+
+    $fileName = uniqid() . '_' . basename($file["name"]);
+    $targetFile = $targetDir . $fileName;
+    
+    // Vérification de sécurité
+    $check = getimagesize($file["tmp_name"]);
+    if ($check === false) {
+        return ['success' => false, 'message' => 'Le fichier n\'est pas une image valide'];
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
     }
 
     // Vérifier l'extension
     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
     $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
     if (!in_array($imageFileType, $allowedTypes)) {
+<<<<<<< HEAD
         error_log("Type de fichier non autorisé: " . $imageFileType);
         return ['success' => false, 'message' => 'Type de fichier non autorisé (.' . $imageFileType . ')'];
+=======
+        return ['success' => false, 'message' => 'Type de fichier non autorisé'];
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
     }
 
     // Vérifier la taille (max 2MB)
     if ($file["size"] > 2000000) {
+<<<<<<< HEAD
         error_log("Fichier trop volumineux: " . $file["size"] . " bytes");
         return ['success' => false, 'message' => 'Fichier trop volumineux (' . round($file["size"]/1024/1024, 2) . ' MB)'];
     }
@@ -348,10 +432,14 @@ function uploadConcertImage($file) {
         if (!is_writable($targetDir)) {
             return ['success' => false, 'message' => 'Le dossier d\'upload n\'est pas accessible en écriture'];
         }
+=======
+        return ['success' => false, 'message' => 'Fichier trop volumineux (>2MB)'];
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
     }
 
     // Déplacer le fichier
     if (move_uploaded_file($file["tmp_name"], $targetFile)) {
+<<<<<<< HEAD
         error_log("Fichier uploadé avec succès: " . $targetFile);
         return ['success' => true, 'path' => $webPath];
     } else {
@@ -380,4 +468,11 @@ function rechercherConcertParId($id_concert) {
     }
 }
 
+=======
+        return ['success' => true, 'path' => $targetFile];
+    } else {
+        return ['success' => false, 'message' => 'Erreur lors du déplacement du fichier'];
+    }
+} 
+>>>>>>> 211c8e7a9104aeaddd4dbc77946169988c3378b2
 ?>
